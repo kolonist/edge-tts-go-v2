@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/surfaceyu/edge-tts-go/edgeTTS"
+	"github.com/kolonist/edge-tts-go-v2/edgeTTS"
 )
 
 func Test_printVoices(t *testing.T) {

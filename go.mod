@@ -1,6 +1,6 @@
-module github.com/surfaceyu/edge-tts-go
+module github.com/kolonist/edge-tts-go-v2
 
-go 1.20
+go 1.25
 
 require (
 	github.com/google/uuid v1.3.0
@@ -8,5 +8,4 @@ require (
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/term v0.10.0
-	golang.org/x/text v0.11.0
 )

@@ -3,36 +3,14 @@ package edgeTTS
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"math"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"golang.org/x/text/encoding/unicode"
-	"golang.org/x/text/transform"
 )
 
 func uuidWithOutDashes() string {
 	return strings.ReplaceAll(uuid.New().String(), "-", "")
-}
-
-func stringToBytes(text interface{}) []byte {
-	var textBytes []byte
-	switch v := text.(type) {
-	case string:
-		encoder := unicode.UTF8.NewEncoder()
-		encodedText, err := ioutil.ReadAll(transform.NewReader(strings.NewReader(v), encoder))
-		if err != nil {
-			panic(fmt.Sprintf("Error encoding text: %s", err.Error()))
-		}
-		textBytes = encodedText
-	case []byte:
-		textBytes = v
-	default:
-		panic("str must be string or []byte")
-	}
-	return textBytes
 }
 
 func bytesToString(text interface{}) string {
@@ -46,29 +24,6 @@ func bytesToString(text interface{}) string {
 		panic("str must be string or []byte")
 	}
 	return testBytes
-}
-
-func splitTextByByteLength(text interface{}, byteLength int) []string {
-	// 将字符串转换为字节数组
-	textBytes := stringToBytes(text)
-	// 按照字节长度拆分字符串
-	var result []string
-	currentByteLength := 0
-	currentString := ""
-	for _, b := range textBytes {
-		if currentByteLength+len(string(b)) <= byteLength {
-			currentString += string(b)
-			currentByteLength += len(string(b))
-		} else {
-			result = append(result, currentString)
-			currentString = string(b)
-			currentByteLength = len(string(b))
-		}
-	}
-	if currentString != "" {
-		result = append(result, currentString)
-	}
-	return result
 }
 
 func mkssml(text interface{}, voice string, rate string, volume string) string {
@@ -87,27 +42,8 @@ func ssmlHeadersPlusData(requestID string, timestamp string, ssml string) string
 		requestID, timestamp, ssml)
 }
 
-func removeIncompatibleCharacters(text interface{}) string {
-	cleanedStr := bytesToString(text)
-	runes := []rune(cleanedStr)
-	for i, r := range runes {
-		code := int(r)
-		if (0 <= code && code <= 8) || (11 <= code && code <= 12) || (14 <= code && code <= 31) {
-			runes[i] = ' '
-		}
-	}
-
-	return string(runes)
-}
-
 func dateToString() string {
 	return time.Now().UTC().Format("Mon Jan 02 2006 15:04:05 GMT-0700 (Coordinated Universal Time)")
-}
-
-func calcMaxMsgSize(voice string, rate string, volume string) int {
-	websocketMaxSize := int(math.Pow(2, 16))
-	overheadPerMessage := len(ssmlHeadersPlusData(uuidWithOutDashes(), dateToString(), mkssml("", voice, rate, volume))) + 50
-	return websocketMaxSize - overheadPerMessage
 }
 
 func getHeadersAndData(data interface{}) (map[string]string, []byte, error) {

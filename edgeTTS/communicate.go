@@ -13,26 +13,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type turnContext struct {
-	ServiceTag string `json:"serviceTag"`
-}
-
-type turnAudio struct {
-	Type     string `json:"type"`
-	StreamID string `json:"streamId"`
-}
-
 // {"context": {"serviceTag": "743d56a9126e4649b2af1660975e3520"}}
-type turnStart struct {
-	Context turnContext `json:"context"`
-}
-
-// {"context":{"serviceTag":"743d56a9126e4649b2af1660975e3520"},"audio":{"type":"inline","streamId":"8D6F2A03213641159BE3476B36473521"}}
-type turnResp struct {
-	Context turnContext `json:"context"`
-	Audio   turnAudio   `json:"audio"`
-}
-
 type turnMetaInnerText struct {
 	Text         string `json:"Text"`
 	Length       int    `json:"Length"`
@@ -156,13 +137,23 @@ func (c *Communicate) fillOption(text *CommunicateTextOption) {
 }
 
 func (c *Communicate) openWs() *websocket.Conn {
-	headers := http.Header{}
-	headers.Add("Pragma", "no-cache")
-	headers.Add("Cache-Control", "no-cache")
-	headers.Add("Origin", "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold")
-	headers.Add("Accept-Encoding", "gzip, deflate, br")
-	headers.Add("Accept-Language", "en-US,en;q=0.9")
-	headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41")
+	headers := http.Header{
+		"Pragma":                 {"no-cache"},
+		"Cache-Control":          {"no-cache"},
+		"Origin":                 {"chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold"},
+		"Accept-Encoding":        {"gzip, deflate, br"},
+		"Accept-Language":        {"en-US,en;q=0.9"},
+		"Sec-WebSocket-Protocol": {"synthesize"},
+		"Sec-WebSocket-Version":  {"13"},
+		"Authority":              {"speech.platform.bing.com"},
+		"Sec-CH-UA":              {`" Not;A Brand";v="99", "Microsoft Edge";v="140", "Chromium";v="140"`},
+		"Sec-CH-UA-Mobile":       {"?0"},
+		"Accept":                 {"*/*"},
+		"Sec-Fetch-Site":         {"none"},
+		"Sec-Fetch-Mode":         {"cors"},
+		"Sec-Fetch-Dest":         {"empty"},
+		"User-Agent":             {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"},
+	}
 
 	dialer := websocket.Dialer{}
 	conn, _, err := dialer.Dial(fmt.Sprintf("%s&ConnectionId=%s", WSS_URL, uuidWithOutDashes()), headers)
