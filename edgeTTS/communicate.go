@@ -137,26 +137,22 @@ func (c *Communicate) fillOption(text *CommunicateTextOption) {
 }
 
 func (c *Communicate) openWs() *websocket.Conn {
-	headers := http.Header{
-		"Pragma":                 {"no-cache"},
-		"Cache-Control":          {"no-cache"},
-		"Origin":                 {"chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold"},
-		"Accept-Encoding":        {"gzip, deflate, br"},
-		"Accept-Language":        {"en-US,en;q=0.9"},
-		"Sec-WebSocket-Protocol": {"synthesize"},
-		"Sec-WebSocket-Version":  {"13"},
-		"Authority":              {"speech.platform.bing.com"},
-		"Sec-CH-UA":              {`" Not;A Brand";v="99", "Microsoft Edge";v="140", "Chromium";v="140"`},
-		"Sec-CH-UA-Mobile":       {"?0"},
-		"Accept":                 {"*/*"},
-		"Sec-Fetch-Site":         {"none"},
-		"Sec-Fetch-Mode":         {"cors"},
-		"Sec-Fetch-Dest":         {"empty"},
-		"User-Agent":             {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"},
+	headers := http.Header{}
+
+	for k, v := range BASE_HEADERS {
+		headers.Set(k, v)
+	}
+	for k, v := range WSS_HEADERS {
+		headers.Set(k, v)
 	}
 
 	dialer := websocket.Dialer{}
-	conn, _, err := dialer.Dial(fmt.Sprintf("%s&ConnectionId=%s", WSS_URL, uuidWithOutDashes()), headers)
+	conn, _, err := dialer.Dial(
+		WSS_URL+
+			"&ConnectionId="+uuidWithOutDashes()+
+			"&Sec-MS-GEC="+generate_sec_ms_gec()+
+			"&Sec-MS-GEC-Version="+SEC_MS_GEC_VERSION,
+		headers)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
