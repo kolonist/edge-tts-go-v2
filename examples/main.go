@@ -10,7 +10,7 @@ func main() {
 	fmt.Println("Trying to get voices list...")
 	voices, err := edgeTTS.ListVoices()
 	if err != nil {
-		fmt.Println("Error: %w", err)
+		fmt.Printf("Error: %v\n", err)
 	}
 
 	voice := ""
@@ -41,16 +41,16 @@ func main() {
 	)
 
 	args := edgeTTS.Args{
-		Voice:          voice,
-		Text:           text,
-		Rate:           "+25%",
-		WriteMedia:     filename,
-		WriteSubtitles: "./subtitles.txt",
+		Voice:         voice,
+		Text:          text,
+		Rate:          "+25%",
+		WriteMedia:    filename,
+		WriteMetadata: "./subtitles.json",
 	}
 
 	err = edgeTTS.Speak(args)
 	if err != nil {
-		fmt.Printf("Error trying to convers text to speach:\n%s\n", err.Error())
+		fmt.Printf("Error trying to convert text to speach:\n%s\n", err.Error())
 		return
 	}
 

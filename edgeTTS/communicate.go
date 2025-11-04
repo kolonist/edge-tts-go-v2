@@ -33,18 +33,24 @@ type turnMeta struct {
 	Metadata []turnMetadata `json:"Metadata"`
 }
 
+type metadataChunk struct {
+	Offset   int    `json:"offset"`
+	Duration int    `json:"duration"`
+	Text     string `json:"text"`
+}
+
 type communicateChunk struct {
-	Type     string
-	Data     []byte
-	Offset   int
-	Duration int
-	Text     string
+	Type string
+	Data []byte
+
+	metadataChunk
 }
 
 type communicateTextTask struct {
 	text       string
 	chunk      chan communicateChunk
 	speechData []byte
+	metaData   []metadataChunk
 }
 
 type communicateTextOption struct {
@@ -55,7 +61,6 @@ type communicateTextOption struct {
 
 type communicate struct {
 	option communicateTextOption
-	proxy  string
 }
 
 func newCommunicate() *communicate {
@@ -105,13 +110,6 @@ func (c *communicate) withVolume(volume string) *communicate {
 	return c
 }
 
-func (c *communicate) withProxy(proxy string) *communicate {
-	if proxy != "" {
-		c.proxy = proxy
-	}
-	return c
-}
-
 func (c *communicate) openWs() (*websocket.Conn, error) {
 	headers := http.Header{}
 
@@ -131,7 +129,7 @@ func (c *communicate) openWs() (*websocket.Conn, error) {
 		headers,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("dial error: %w", err)
+		return nil, fmt.Errorf("dial error: %v", err)
 	}
 	return conn, nil
 }
@@ -190,10 +188,6 @@ func (c *communicate) stream(task *communicateTextTask) (chan communicateChunk, 
 				parameters, data := getHeadersAndData(data)
 				path := parameters["Path"]
 
-				if path == "audio.metadata" {
-					fmt.Println(string(data))
-				}
-
 				if path == "turn.start" {
 					downloadAudio = true
 				} else if path == "turn.end" {
@@ -209,10 +203,12 @@ func (c *communicate) stream(task *communicateTextTask) (chan communicateChunk, 
 					for _, v := range meta.Metadata {
 						if v.Type == chunkTypeWordBoundary {
 							task.chunk <- communicateChunk{
-								Type:     v.Type,
-								Offset:   v.Data.Offset,
-								Duration: v.Data.Duration,
-								Text:     v.Data.Text.Text,
+								Type: v.Type,
+								metadataChunk: metadataChunk{
+									Offset:   metadataDrationToMilliseconds(v.Data.Offset),
+									Duration: metadataDrationToMilliseconds(v.Data.Duration),
+									Text:     v.Data.Text.Text,
+								},
 							}
 						} else if v.Type == chunkTypeSessionEnd {
 							continue
@@ -257,7 +253,11 @@ func (c *communicate) process(task *communicateTextTask) error {
 		if ok {
 			if v.Type == chunkTypeAudio {
 				task.speechData = append(task.speechData, v.Data...)
-				// } else if v.Type == ChunkTypeWordBoundary {
+			} else if v.Type == chunkTypeWordBoundary {
+				task.metaData = append(
+					task.metaData,
+					metadataChunk{v.Offset, v.Duration, v.Text},
+				)
 			} else if v.Type == chunkTypeEnd {
 				close(task.chunk)
 				break
@@ -284,4 +284,8 @@ func isValidVolume(volume string) bool {
 		return false
 	}
 	return regexp.MustCompile(`^[+-]\d+%$`).MatchString(volume)
+}
+
+func metadataDrationToMilliseconds(time int) int {
+	return time / 10_000
 }
