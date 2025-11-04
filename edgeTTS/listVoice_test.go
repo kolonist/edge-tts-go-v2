@@ -19,9 +19,9 @@ func Test_listVoices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := listVoices()
+			got, err := ListVoices()
 			if len(got) <= 0 {
-				t.Errorf("listVoices() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ListVoices() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
@@ -56,10 +56,10 @@ func TestVoicesManager_find(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.vm.find(tt.args.attributes)
 			if len(got) <= 0 {
-				t.Errorf("listVoices() wantErr %v", tt.want)
+				t.Errorf("ListVoices() wantErr %v", tt.want)
 				return
 			}
-			t.Logf("listVoices() got %v", got)
+			t.Logf("ListVoices() got %v", got)
 		})
 	}
 }

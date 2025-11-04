@@ -23,24 +23,24 @@ type VoiceTag struct {
 	VoicePersonalities []string `json:"VoicePersonalities"`
 }
 
-func listVoices() ([]Voice, error) {
+func ListVoices() ([]Voice, error) {
 	// Send GET request to retrieve the list of voices.
 	client := http.Client{}
 	req, err := http.NewRequest(
 		"GET",
-		VOICE_LIST+
-			"&Sec-MS-GEC="+generate_sec_ms_gec()+
-			"&Sec-MS-GEC-Version="+SEC_MS_GEC_VERSION,
+		voiceListUrl+
+			"&Sec-MS-GEC="+generateSecMSGEC()+
+			"&Sec-MS-GEC-Version="+secMSGECVersion,
 		nil,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	for k, v := range BASE_HEADERS {
+	for k, v := range baseHeaders {
 		req.Header.Set(k, v)
 	}
-	for k, v := range VOICE_HEADERS {
+	for k, v := range voiceHeaders {
 		req.Header.Set(k, v)
 	}
 
@@ -74,7 +74,7 @@ type VoicesManager struct {
 func (vm *VoicesManager) create(customVoices []Voice) error {
 	vm.voices = customVoices
 	if customVoices == nil {
-		voices, err := listVoices()
+		voices, err := ListVoices()
 		if err != nil {
 			return err
 		}

@@ -48,6 +48,6 @@ func main() {
 			Volume:     *volume,
 			WriteMedia: *writeMedia,
 		}
-		edgeTTS.NewTTS(args).AddText(args.Text, args.Voice, args.Rate, args.Volume).Speak()
+		edgeTTS.Speak(args)
 	}
 }

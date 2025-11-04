@@ -1,47 +1,41 @@
 package edgeTTS
 
 const (
-	CHROMIUM_FULL_VERSION  = "140.0.3485.14"
-	CHROMIUM_MAJOR_VERSION = "140"
-	SEC_MS_GEC_VERSION     = "1-" + CHROMIUM_FULL_VERSION
-	BASE_URL               = "api.msedgeservices.com/tts/cognitiveservices"
-	TRUSTED_CLIENT_TOKEN   = "6A5AA1D4EAFF4E9FB37E23D68491D6F4"
-	WSS_URL                = "wss://" + BASE_URL + "/websocket/v1?Ocp-Apim-Subscription-Key=" + TRUSTED_CLIENT_TOKEN
-	VOICE_LIST             = "https://" + BASE_URL + "/voices/list?Ocp-Apim-Subscription-Key=" + TRUSTED_CLIENT_TOKEN
-)
-
-// Locale
-const (
-	ZhCN = "zh-CN"
-	EnUS = "en-US"
+	chromiumFullVersion  = "140.0.3485.14"
+	chromiumMajorVersion = "140"
+	secMSGECVersion      = "1-" + chromiumFullVersion
+	baseURL              = "api.msedgeservices.com/tts/cognitiveservices"
+	trustedClientToken   = "6A5AA1D4EAFF4E9FB37E23D68491D6F4"
+	wssURL               = "wss://" + baseURL + "/websocket/v1?Ocp-Apim-Subscription-Key=" + trustedClientToken
+	voiceListUrl         = "https://" + baseURL + "/voices/list?Ocp-Apim-Subscription-Key=" + trustedClientToken
 )
 
 const (
-	ChunkTypeAudio        = "Audio"
-	ChunkTypeWordBoundary = "WordBoundary"
-	ChunkTypeSessionEnd   = "SessionEnd"
-	ChunkTypeEnd          = "ChunkEnd"
+	chunkTypeAudio        = "Audio"
+	chunkTypeWordBoundary = "WordBoundary"
+	chunkTypeSessionEnd   = "SessionEnd"
+	chunkTypeEnd          = "ChunkEnd"
 )
 
 var (
-	BASE_HEADERS map[string]string = map[string]string{
+	baseHeaders map[string]string = map[string]string{
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" +
-			" (KHTML, like Gecko) Chrome/" + CHROMIUM_MAJOR_VERSION + ".0.0.0 Safari/537.36" +
-			" Edg/" + CHROMIUM_MAJOR_VERSION + ".0.0.0",
+			" (KHTML, like Gecko) Chrome/" + chromiumMajorVersion + ".0.0.0 Safari/537.36" +
+			" Edg/" + chromiumMajorVersion + ".0.0.0",
 		"Accept-Encoding": "gzip, deflate, br",
 		"Accept-Language": "en-US,en;q=0.9",
 	}
-	WSS_HEADERS map[string]string = map[string]string{
+	wssHeaders map[string]string = map[string]string{
 		"Pragma":                 "no-cache",
 		"Cache-Control":          "no-cache",
 		"Origin":                 "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
 		"Sec-WebSocket-Protocol": "synthesize",
 		// "Sec-WebSocket-Version":  "13", // don't need
 	}
-	VOICE_HEADERS map[string]string = map[string]string{
+	voiceHeaders map[string]string = map[string]string{
 		"Authority": "speech.platform.bing.com",
-		"Sec-CH-UA": "\" Not;A Brand\";v=\"99\", \"Microsoft Edge\";v=\"" + CHROMIUM_MAJOR_VERSION + "\"," +
-			" \"Chromium\";v=\"" + CHROMIUM_MAJOR_VERSION + "\"",
+		"Sec-CH-UA": `" Not;A Brand";v="99", "Microsoft Edge";v="` + chromiumMajorVersion + `",` +
+			` "Chromium";v="` + chromiumMajorVersion + `"`,
 		"Sec-CH-UA-Mobile": "?0",
 		"Accept":           "*/*",
 		"Sec-Fetch-Site":   "none",
