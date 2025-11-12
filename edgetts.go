@@ -86,8 +86,9 @@ func (etts *EdgeTTS) Speak(text string) *EdgeTTS {
 //
 //	Current EdgeTTS struct to use in chained calls
 func (etts *EdgeTTS) SpeakWithVoice(text string, voice string) *EdgeTTS {
-	etts.args.Voice = voice
 	etts.text = text
+	etts.args.Voice = voice
+
 	return etts
 }
 
@@ -105,7 +106,7 @@ func (etts *EdgeTTS) SaveToFile(filename string, format OutputFormat) error {
 	return nil
 }
 
-// GetSoundBytes iterator generate speech audio data and returns it in iterator.
+// GetSoundBytesIterator generate speech and return it in iterator with small byte buffers as they come from server.
 //
 // Parameters:
 //
@@ -114,8 +115,22 @@ func (etts *EdgeTTS) SaveToFile(filename string, format OutputFormat) error {
 // Returns:
 //
 //	error if file was not written for some reason
-func (etts *EdgeTTS) GetSoundBytes(format OutputFormat) iter.Seq[[]byte] {
+func (etts *EdgeTTS) GetSoundBytesIterator(format OutputFormat) iter.Seq[[]byte] {
 	return nil
+}
+
+// GetSoundBytes generate speech and returns it as bytes.
+//
+// Parameters:
+//
+//	format - format of sound data to write to file. Use one of OutputFormat* constants
+//
+// Returns:
+//
+//   - buffer containing sound data of defined format
+//   - error if file was not written for some reason
+func (etts *EdgeTTS) GetSoundBytes(format OutputFormat) ([]byte, error) {
+	return nil, nil
 }
 
 // GetMetadata gets metadata of generated speech

@@ -10,7 +10,7 @@ const (
 	OutputFormatRaw44100
 )
 
-func (f OutputFormat) toString() string {
+func (f OutputFormat) String() string {
 	switch f {
 	case OutputFormatWebm:
 		return "webm-24khz-16bit-24kbps-mono-opus"

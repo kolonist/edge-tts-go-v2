@@ -24,7 +24,7 @@ type Args struct {
 // 	return args.Text, nil
 // }
 
-func (args *Args) GetVoice() (string, error) {
+func (args *Args) getVoice() (string, error) {
 	if args.Voice == "" {
 		return "", fmt.Errorf("voice not specified")
 	}
