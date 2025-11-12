@@ -56,14 +56,19 @@ func main() {
 	)
 
 	args := edgetts.Args{
-		Voice:        voice,
-		Text:         text,
-		Rate:         "+15%",
-		AudioFile:    filename,
-		MetadataFile: "./subtitles.json",
+		Voice: voice,
+		// Text:         text,
+		Rate: "+15%",
+		// AudioFile:    filename,
+		// MetadataFile: "./subtitles.json",
 	}
 
-	err = edgetts.Speak(args)
+	tts := edgetts.New(args)
+
+	err = tts.
+		Speak(text).
+		SaveToFile(filename, edgetts.OutputFormatMp3)
+
 	if err != nil {
 		fmt.Printf("Error trying to convert text to speach:\n%s\n", err.Error())
 		return

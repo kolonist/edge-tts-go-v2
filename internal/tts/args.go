@@ -16,15 +16,15 @@ type Args struct {
 	Rate string
 }
 
-func (args *Args) getText() (string, error) {
-	if args.Text == "" {
-		return "", fmt.Errorf("text not specified")
-	}
+// func (args *Args) getText() (string, error) {
+// 	if args.Text == "" {
+// 		return "", fmt.Errorf("text not specified")
+// 	}
 
-	return args.Text, nil
-}
+// 	return args.Text, nil
+// }
 
-func (args *Args) getVoice() (string, error) {
+func (args *Args) GetVoice() (string, error) {
 	if args.Voice == "" {
 		return "", fmt.Errorf("voice not specified")
 	}

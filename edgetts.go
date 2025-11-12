@@ -3,6 +3,7 @@ package edgetts
 
 import (
 	"fmt"
+	"iter"
 
 	"github.com/kolonist/edgetts/internal/tts"
 )
@@ -51,7 +52,7 @@ type EdgeTTS struct {
 // Returns:
 //
 //	New EdgeTTS struct
-func (etts *EdgeTTS) New(args Args) *EdgeTTS {
+func New(args Args) *EdgeTTS {
 	return &EdgeTTS{
 		text:     "",
 		args:     args,
@@ -101,6 +102,19 @@ func (etts *EdgeTTS) SpeakWithVoice(text string, voice string) *EdgeTTS {
 //
 //	error if file was not written for some reason
 func (etts *EdgeTTS) SaveToFile(filename string, format OutputFormat) error {
+	return nil
+}
+
+// GetSoundBytes iterator generate speech audio data and returns it in iterator.
+//
+// Parameters:
+//
+//	format - format of sound data to write to file. Use one of OutputFormat* constants
+//
+// Returns:
+//
+//	error if file was not written for some reason
+func (etts *EdgeTTS) GetSoundBytes(format OutputFormat) iter.Seq[[]byte] {
 	return nil
 }
 
