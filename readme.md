@@ -24,14 +24,11 @@ func main() {
 		Voice: "en-US-AlloyTurboMultilingualNeural",
 	}
 
-	// create EdgeTTS struct with voice and other synthesys parameters
-	tts := edgetts.New(args)
-
-	// create Speaker struct with text to synthesize
-	speaker := tts.Speak("Text I need to speak now")
-
 	// generate sound in mp3 format and save it to the file
-	err := speaker.SaveToFile(context.TODO(), "./sample.mp3", edgetts.OutputFormatMp3)
+	err := edgetts.
+		New(args).
+		Speak("Text I need to speak now").
+		SaveToFile(context.TODO(), "./sample.mp3", edgetts.OutputFormatMp3)
 }
 ```
 

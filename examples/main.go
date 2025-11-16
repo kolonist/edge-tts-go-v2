@@ -53,9 +53,9 @@ func main() {
 		Rate:  "+15%",
 	}
 
-	tts := edgetts.New(args)
-
-	speaker := tts.Speak(text)
+	speaker := edgetts.
+		New(args).
+		Speak(text)
 
 	if err := speaker.SaveToFile(context.TODO(), filename, edgetts.OutputFormatMp3); err != nil {
 		fmt.Printf("Error trying to synthesize speech:\n%s\n", err.Error())
