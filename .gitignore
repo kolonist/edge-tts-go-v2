@@ -5,3 +5,4 @@
 *.raw
 *.pcm
 *.json
+.DS_Store
